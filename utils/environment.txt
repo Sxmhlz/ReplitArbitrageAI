@@ -1,0 +1,64 @@
+import asyncio
+import signal
+import logging
+from pathlib import Path
+from typing import Optional
+
+logger = logging.getLogger('Environment')
+
+class EnvironmentManager:
+    def __init__(self, project_root: Path):
+        self.project_root = project_root
+        self.bot = None
+        self.shutdown_event = asyncio.Event()
+
+    def setup_environment(self):
+        """Konfiguriert die Projektumgebung."""
+        directories = [
+            'data',
+            'logs',
+            'models',
+            'config'
+        ]
+        
+        for directory in directories:
+            (self.project_root / directory).mkdir(parents=True, exist_ok=True)
+        
+        logger.info("Projektumgebung eingerichtet")
+
+    def register_bot(self, bot):
+        """Registriert den Bot für Signal-Handling."""
+        self.bot = bot
+        self._setup_signal_handlers()
+
+    def _setup_signal_handlers(self):
+        """Registriert Signal-Handler für sauberes Herunterfahren."""
+        loop = asyncio.get_event_loop()
+        
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(
+                sig,
+                lambda s=sig: asyncio.create_task(self._handle_shutdown(s))
+            )
+        
+        logger.info("Signal-Handler registriert")
+
+    async def _handle_shutdown(self, sig: signal.Signals):
+        """Behandelt Shutdown-Signale."""
+        if self.shutdown_event.is_set():
+            return
+
+        self.shutdown_event.set()
+        logger.info(f"Signal {sig.name} empfangen, initiiere Shutdown...")
+        
+        if self.bot:
+            try:
+                await self.bot.shutdown()
+            except Exception as e:
+                logger.error(f"Fehler während Shutdown: {e}")
+
+    def cleanup(self):
+        """Bereinigt die Signal-Handler."""
+        loop = asyncio.get_event_loop()
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.remove_signal_handler(sig)

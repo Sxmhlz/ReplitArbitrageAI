@@ -1,0 +1,69 @@
+{
+    "api": {
+        "alias": {
+            "base_url": "https://sell-api.goat.com/api/v1",
+            "analytics_url": "https://sell-api.goat.com/api/v1/analytics/variants/availability",
+            "search_url": "https://2fwotdvm2o-dsn.algolia.net/1/indexes/product_variants_v2",
+            "rate_limit": 10,
+            "timeout": 30,
+            "retry_attempts": 3
+        },
+        "hhv": {
+            "base_url": "https://www.hhv.de",
+            "product_endpoint": "/clothing/katalog/filter/schuhe-N10",
+            "rate_limit": 5,
+            "timeout": 20,
+            "retry_attempts": 3
+        }
+    },
+    "database": {
+        "url": "sqlite+aiosqlite:///arbitrage.db",
+        "pool_size": 20,
+        "max_overflow": 10,
+        "echo": true,
+        "backup_enabled": true,
+        "backup_interval": 86400
+    },
+    "cache": {
+        "redis_url": "redis://localhost:6379",
+        "default_ttl": 300,
+        "max_items": 10000,
+        "compression": true
+    },
+    "ml": {
+        "model_path": "models/price_prediction.pt",
+        "training_interval": 86400,
+        "min_confidence": 0.5,
+        "batch_size": 32,
+        "validation_split": 0.1
+    },
+    "monitor": {
+        "scan_interval": 300,
+        "check_interval": 60,
+        "max_retries": 3,
+        "batch_size": 50,
+        "min_profit": 10.0,
+        "min_roi": 15.0
+    },
+    "proxy": {
+        "file_path": "config/proxies.txt",
+        "validation_interval": 300,
+        "max_errors": 5,
+        "min_score": 0.3,
+        "retry_delay": 1
+    },
+    "logging": {
+        "level": "DEBUG",
+        "file_path": "logs/bot.log",
+        "max_size": 10485760,
+        "backup_count": 5,
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    },
+    "discord": {
+        "enabled": true,
+        "startup_notification": true,
+        "error_notification": true,
+        "deal_notification": true,
+        "min_profit_alert": 20.0
+    }
+}

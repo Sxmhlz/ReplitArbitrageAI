@@ -1,0 +1,69 @@
+{
+    "api": {
+        "alias": {
+            "base_url": "https://sell-api.goat.com/api/v1",
+            "analytics_url": "https://sell-api.goat.com/api/v1/analytics/variants/availability",
+            "search_url": "https://2fwotdvm2o-dsn.algolia.net/1/indexes/product_variants_v2",
+            "rate_limit": 5,
+            "timeout": 20,
+            "retry_attempts": 5
+        },
+        "hhv": {
+            "base_url": "https://www.hhv.de",
+            "product_endpoint": "/clothing/katalog/filter/schuhe-N10",
+            "rate_limit": 3,
+            "timeout": 15,
+            "retry_attempts": 5
+        }
+    },
+    "database": {
+        "url": "sqlite+aiosqlite:///arbitrage.db",
+        "pool_size": 50,
+        "max_overflow": 20,
+        "echo": false,
+        "backup_enabled": true,
+        "backup_interval": 43200
+    },
+    "cache": {
+        "redis_url": "redis://localhost:6379",
+        "default_ttl": 600,
+        "max_items": 50000,
+        "compression": true
+    },
+    "ml": {
+        "model_path": "models/price_prediction.pt",
+        "training_interval": 172800,
+        "min_confidence": 0.7,
+        "batch_size": 64,
+        "validation_split": 0.2
+    },
+    "monitor": {
+        "scan_interval": 600,
+        "check_interval": 120,
+        "max_retries": 5,
+        "batch_size": 100,
+        "min_profit": 15.0,
+        "min_roi": 20.0
+    },
+    "proxy": {
+        "file_path": "config/proxies.txt",
+        "validation_interval": 600,
+        "max_errors": 3,
+        "min_score": 0.5,
+        "retry_delay": 2
+    },
+    "logging": {
+        "level": "INFO",
+        "file_path": "logs/bot.log",
+        "max_size": 52428800,
+        "backup_count": 10,
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    },
+    "discord": {
+        "enabled": true,
+        "startup_notification": true,
+        "error_notification": true,
+        "deal_notification": true,
+        "min_profit_alert": 30.0
+    }
+}
